@@ -114,7 +114,7 @@ impl<'a> CoreContext {
             SpeakingUpdate(evt) => EventContext::SpeakingUpdate(SpeakingUpdateData::from(evt)),
             VoicePacket(evt) => EventContext::VoicePacket(VoiceData::from(evt)),
             RtcpPacket(evt) => EventContext::RtcpPacket(RtcpData::from(evt)),
-            ClientConnect(evt) => EventContext::ClientConnect(*evt),
+            ClientConnect(evt) => EventContext::ClientConnect(evt.clone()),
             ClientDisconnect(evt) => EventContext::ClientDisconnect(*evt),
             DriverConnect(evt) => EventContext::DriverConnect(ConnectData::from(evt)),
             DriverReconnect(evt) => EventContext::DriverReconnect(ConnectData::from(evt)),

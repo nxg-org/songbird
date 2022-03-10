@@ -74,13 +74,15 @@ version = "0.8"
 
 [dependencies.serenity]
 optional = true
-version = "^0.10.2"
+git = "https://github.com/nxg-org/serenity"
+rev = "76f7245134af733219dd542a469e1d5ad23fe9fa"
 default-features = false
 features = ["voice", "gateway"]
 
 [dependencies.serenity-voice-model]
 optional = true
-version = "0.1"
+git = "https://github.com/nxg-org/serenity-voice-model"
+rev = "9fadcfec6e1ccff3973e63f9d7c225ac66ba4d0b"
 
 [dependencies.spin_sleep]
 optional = true

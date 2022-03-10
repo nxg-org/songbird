@@ -19,6 +19,7 @@ use crate::{
 use discortp::discord::{IpDiscoveryPacket, IpDiscoveryType, MutableIpDiscoveryPacket};
 use error::{Error, Result};
 use flume::Sender;
+use serenity_voice_model::payload::SessionDescription;
 use std::{net::IpAddr, str::FromStr, sync::Arc};
 #[cfg(not(feature = "tokio-02-marker"))]
 use tokio::{net::UdpSocket, spawn, time::timeout};
@@ -77,6 +78,8 @@ impl Connection {
                 session_id: info.session_id.clone(),
                 token: info.token.clone(),
                 user_id: info.user_id.into(),
+                streams: vec![],
+                video: false
             }))
             .await?;
 
@@ -164,8 +167,7 @@ impl Connection {
             })?;
 
             client
-                .send_json(&GatewayEvent::from(SelectProtocol {
-                    protocol: "udp".into(),
+                .send_json(&GatewayEvent::from(SelectProtocol::UDP {
                     data: ProtocolData {
                         address,
                         mode: config.crypto_mode.to_request_str().into(),
@@ -339,12 +341,12 @@ async fn init_cipher(client: &mut WsStream, mode: CryptoMode) -> Result<Cipher> 
         };
 
         match value {
-            GatewayEvent::SessionDescription(desc) => {
-                if desc.mode != mode.to_request_str() {
+            GatewayEvent::SessionDescription(SessionDescription::UDP{mode: udpmode, secret_key}) => {
+                if udpmode != mode.to_request_str() {
                     return Err(Error::CryptoModeInvalid);
                 }
 
-                return Ok(Cipher::new_from_slice(&desc.secret_key)?);
+                return Ok(Cipher::new_from_slice(&secret_key)?);
             },
             other => {
                 debug!(

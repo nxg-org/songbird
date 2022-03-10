@@ -1,4 +1,4 @@
-#![allow(missing_docs)]
+#![allow(missing_docs, clippy::large_enum_variant)]
 
 use crate::tracks::Track;
 
